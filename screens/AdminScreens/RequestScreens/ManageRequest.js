@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, BackHandler, Linking, TouchableOpacity, SafeAreaView } from 'react-native';
 import { COLORS } from '../../../constants';
-import { collection, getDocs} from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from "../../../config";
 import LoadingModal from '../../../components/LoadingModel';
 import CustomButton from '../../../components/CustomButton';
@@ -14,43 +14,43 @@ const ManageRequest = ({ navigation }) => {
 
   function renderHeader() {
     return (
-        <View
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginVertical: 12,
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.navigate("AdminDashboard")}>
+          <MaterialCommunityIcons
+            name="view-dashboard"
+            size={28}
+            color={COLORS.primaryRed}
+          />
+        </TouchableOpacity>
+        <View>
+          <View
             style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 12,
+              height: 6,
+              width: 6,
+              backgroundColor: COLORS.primaryRed,
+              borderRadius: 3,
+              position: 'absolute',
+              right: 5,
+              top: 5,
             }}
-        >
-            <TouchableOpacity onPress={() => navigation.navigate("AdminDashboard")}>
-                <MaterialCommunityIcons
-                    name="view-dashboard"
-                    size={28}
-                    color={COLORS.primaryRed}
-                />
-            </TouchableOpacity>
-            <View>
-                <View
-                    style={{
-                        height: 6,
-                        width: 6,
-                        backgroundColor: COLORS.primaryRed,
-                        borderRadius: 3,
-                        position: 'absolute',
-                        right: 5,
-                        top: 5,
-                    }}
-                ></View>
-                <TouchableOpacity onPress={() => console.log('Pressed')}>
-                    <Ionicons
-                        name="notifications-outline"
-                        size={28}
-                        color={COLORS.black}
-                    />
-                </TouchableOpacity>
-            </View>
+          ></View>
+          <TouchableOpacity onPress={() => console.log('Pressed')}>
+            <Ionicons
+              name="notifications-outline"
+              size={28}
+              color={COLORS.black}
+            />
+          </TouchableOpacity>
         </View>
+      </View>
     )
-}
+  }
 
   //Function to navigate back when hardware back button is pressed
   useEffect(() => {
@@ -78,6 +78,7 @@ const ManageRequest = ({ navigation }) => {
           id: doc.id,
           fullName: doc.data().fullName,
           phoneNumber: doc.data().phoneNumber,
+          currentUserName: doc.data().currentUserName,
           ...doc.data()
         }));
         setRequests(requestData);
@@ -93,32 +94,32 @@ const ManageRequest = ({ navigation }) => {
   const handleContactRequest = (phoneNumber) => {
     // Construct the tel: URL to initiate a call
     const phoneNumberUrl = `tel:${phoneNumber}`;
-    
+
     // Open the phone app to initiate the call
     Linking.openURL(phoneNumberUrl);
   };
-  
+
   const handleDeleteRequest = async (requestId) => {
     try {
       // Remove the request from the screen
       setRequests((prevRequests) => prevRequests.filter((request) => request.id !== requestId));
-  
+
       // Remove the request from Firestore collection
       await deleteDoc(doc(db, 'requests', requestId));
     } catch (error) {
       console.error('Error deleting request: ', error);
     }
   };
-  
-  
+
+
   const handleRespondToRequest = (requestId) => {
     // When button is pressed
     navigation.navigate("MassRequest");
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
-    {renderHeader()}
+      {renderHeader()}
       <LoadingModal visible={isLoading} />
       <Text style={styles.title}>Manage Requests</Text>
       <FlatList
@@ -151,24 +152,27 @@ const ManageRequest = ({ navigation }) => {
 
             </View>
             <View >
-            <View style={{flexDirection:'row',justifyContent:'space-evenly',marginHorizontal:20}
-            }>
-        <TouchableOpacity style={styles.button}
-          onPress={() => handleDeleteRequest(item.id)}>
-          <Text style={styles.buttonText}>Delete</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.button}
-          onPress={() => handleRespondToRequest(item.id)}>
-            <Text style={styles.buttonText}>Respond</Text>
-          </TouchableOpacity>
-        <TouchableOpacity style={styles.button}
-    onPress={() => handleContactRequest(item.phoneNumber)}>
-    <Text style={styles.buttonText}>Contact</Text></TouchableOpacity>
-  </View>
-      </View>
-
+              <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20 }
+              }>
+                <TouchableOpacity style={styles.button}
+                  onPress={() => handleDeleteRequest(item.id)}>
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}
+                  onPress={() => handleRespondToRequest(item.id)}>
+                  <Text style={styles.buttonText}>Respond</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}
+                  onPress={() => handleContactRequest(item.phoneNumber)}>
+                  <Text style={styles.buttonText}>Contact</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Text style={styles.sentBy}>Request Sent By: {item.currentUserName}  </Text>
           </View>
         )}
       />
+
     </SafeAreaView>
   );
 };
@@ -210,21 +214,27 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   button: {
-    marginTop:10,
+    marginTop: 10,
     borderRadius: 10,
     marginHorizontal: 20,
     padding: 10,
-    width:96,
-    paddingHorizontal:16,
+    width: 96,
+    paddingHorizontal: 16,
     alignItems: 'center',
-    backgroundColor:COLORS.primaryRed
+    backgroundColor: COLORS.primaryRed
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
-
+  sentBy: {
+    alignSelf: 'flex-end',
+    fontSize: 12,
+    color: 'grey',
+    marginBottom: -5,
+    marginTop: 10
+  },
 });
 
 export default ManageRequest;

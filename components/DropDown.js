@@ -10,7 +10,7 @@ const DropDown = ({
     onSelect = () => { }
 
 }) => {
-    console.log("selected value", !!value)
+
     const [showOption, setShowOption] = useState(false)
 
     const onSelectedItem = (val) => {

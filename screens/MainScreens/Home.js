@@ -37,10 +37,10 @@ const Home = () => {
 
 
   return (
-    
-   
-      <View style={{ flex: 1}}>
-      <HeaderUsers navigation={navigation} />
+
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <HeaderUsers navigation={navigation} />
         <View style={styles.container}>
           <View style={{
             marginLeft: 15,
@@ -85,7 +85,7 @@ const Home = () => {
           </View>
         </View>
       </View>
-
+    </SafeAreaView>
   );
 };
 

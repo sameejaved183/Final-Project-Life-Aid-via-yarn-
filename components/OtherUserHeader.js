@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import { View, TouchableOpacity, StyleSheet,Text} from 'react-native'; 
+import React, { useEffect, useState } from 'react';
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { COLORS, } from '../constants';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
 import { getDatabase, ref, onValue, update, get } from "firebase/database";
@@ -37,75 +37,63 @@ const OtherUserHeader = (props) => {
   }, []);
   return (
     <View
-    style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#CF0A0A',
-            marginHorizontal: 0.5,
-            height: 80,
-            elevation: 20,
-            paddingVertical: 20,
-            shadowColor: 'black',
-            shadowOffset: { width: 0, height: 2 },
-            shadowRadius: 6,
-            shadowOpacity: 0.3,
-            borderBottomRightRadius: 10,
-            borderBottomLeftRadius: 10,
-        }}
-  >
-    <TouchableOpacity style={{ marginLeft: 15 }}
-     onPress={() => navigation.navigate("Menu")}>
-      <MaterialCommunityIcons
-        name="view-dashboard"
-        size={30}
-        color={COLORS.secondaryWhite}
-      />
-    </TouchableOpacity>
-    <View>
-      <View
-        style={{
-          height: 6,
-          width: 6,
-          backgroundColor: 'black',
-          borderRadius: 3,
-          position: 'absolute',
-          right: 21,
-          top: -10,
-          marginBottom: 20
-        }}
-      >
-
-      </View>
-      <TouchableOpacity onPress={() => {
-        props.navigation.navigate('NotificationScreen');
-      }}>
-        <Ionicons style={{
-          position: 'absolute',
-          right: 15,
-          top: -14,
-
-        }}
-          name="notifications-outline"
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: '#CF0A0A',
+        marginHorizontal: 0.5,
+        height: 80,
+        elevation: 20,
+        paddingVertical: 20,
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 6,
+        shadowOpacity: 0.3,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
+      }}
+    >
+      <TouchableOpacity style={{ marginLeft: 15 }}
+        onPress={() => navigation.navigate("Menu")}>
+        <MaterialCommunityIcons
+          name="view-dashboard"
           size={30}
-          color='white'
+          color={COLORS.secondaryWhite}
         />
-
-        {unreadCount > 0 && (
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationBadgeText}>{unreadCount}</Text>
-          </View>
-        )}
       </TouchableOpacity>
+      <View>
+
+
+        <TouchableOpacity onPress={() => {
+          props.navigation.navigate('NotificationScreen');
+        }}>
+          <Ionicons style={{
+            position: 'absolute',
+            right: 20,
+            top: -14,
+
+          }}
+            name="notifications-outline"
+            size={30}
+            color='white'
+          />
+
+          {unreadCount > 0 && (
+            <View style={styles.notificationBadge}>
+              <Text style={styles.notificationBadgeText}>{unreadCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
   )
 }
 const styles = StyleSheet.create({
   notificationBadge: {
     position: 'absolute',
     top: 0,
-    right: 9,
+    right: 12,
     backgroundColor: 'white',
     borderRadius: 10,
     width: 20,

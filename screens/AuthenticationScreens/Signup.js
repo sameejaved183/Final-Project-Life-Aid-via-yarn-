@@ -19,7 +19,7 @@ import CustomDatePicker from "../../components/CustomDatePicker";
 import DropDown from '../../components/DropDown';
 import { validateEmail } from "../../components/validation"; // Import the email validation function
 import * as Location from 'expo-location';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { addDoc, collection } from 'firebase/firestore';
 import { auth, db } from '../../config';
 import { getAuth } from 'firebase/auth';
@@ -98,61 +98,53 @@ function Signup({ navigation }) {
     setIsLoading(true);
 
     try {
-      const locationData = await requestLocationPermission(); // Fetch location data
+      const locationData = await requestLocationPermission();
 
       if (!locationData) {
-        // Handle the case where location data is not available or permission was denied
         setIsLoading(false);
         return;
       }
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log('User created:', user);
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log('User created:', user);
 
-          const usersCollection = collection(db, 'users');
-          addDoc(usersCollection, {
-            fullName: fullName,
-            email: email,
-            phoneNumber: `${countryCode}${phoneNumber}`,
-            address: address,
-            gender: selectedGender,
-            bloodGroup: selectedItem?.name,
-            dateOfBirth: dateOfBirth,
-            location: { // Include the location data
-              latitude: locationData.latitude,
-              longitude: locationData.longitude,
-            },
-          })
-            .then(() => {
-              console.log('Data added successfully.');
-              setIsLoading(false);
-              navigation.replace('Signin');
-              setFullName('');
-              setEmail('');
-              setPhoneNumber('');
-              setCountryCode('+92');
-              setPassword('');
-              setAddress('');
-              setSelectedGender(null);
-              setDateofBirth(null);
-              setSelectedItem(null);
-            })
-            .catch((error) => {
-              console.error('Error adding data:', error);
-              setIsLoading(false);
-            });
-        })
-        .catch((error) => {
-          console.error('Error creating user:', error);
-          setIsLoading(false);
+        await updateProfile(auth.currentUser, {
+          displayName: fullName,
         });
+
+        console.log('Display name updated successfully.');
+
+        const usersCollection = collection(db, 'users');
+        await addDoc(usersCollection, {
+          fullName: fullName,
+          email: email,
+          phoneNumber: `${countryCode}${phoneNumber}`,
+          address: address,
+          gender: selectedGender,
+          bloodGroup: selectedItem?.name,
+          dateOfBirth: dateOfBirth,
+          location: {
+            latitude: locationData.latitude,
+            longitude: locationData.longitude,
+          },
+        });
+
+        console.log('Data added successfully.');
+        setIsLoading(false);
+        navigation.navigate('Signin');
+      } catch (error) {
+        console.error('Error creating user or updating display name:', error);
+        setIsLoading(false);
+      }
+
     } catch (error) {
       console.error('Error requesting location permission:', error);
       setIsLoading(false);
     }
   };
+
 
 
   const requestLocationPermission = async () => {

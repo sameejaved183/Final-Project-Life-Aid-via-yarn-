@@ -141,7 +141,7 @@ const MapPage = () => {
 
   return (
     <View style={styles.container}>
-    
+
       {errorMsg ? (
         <Text>{errorMsg}</Text>
       ) : location ? (
@@ -198,7 +198,7 @@ const MapPage = () => {
       <CurrentLocationButton onPress={handleBackToCurrentLocation} />
 
       <TouchableOpacity style={styles.reloadButton} onPress={handleReloadMap}>
-        <Image style={{ width: 30, height: 30 }} source={icons.refreshIcon} />
+        <Image style={styles.refreshIcon} source={icons.refreshIcon} />
       </TouchableOpacity>
     </View>
   );
@@ -220,6 +220,13 @@ const styles = StyleSheet.create({
     right: 10,
     padding: 10,
   },
+  refreshIcon: {
+    height: 30,
+    width: 30,
+    position: 'absolute',
+    right: 6,
+    top: 5
+  }
 });
 
 export default MapPage;

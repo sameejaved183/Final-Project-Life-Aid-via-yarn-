@@ -26,7 +26,7 @@ const bloodType = [
     { id: 8, name: 'O-' }
 ];
 
-function RequestPage({navigation}) {
+function RequestPage({ navigation }) {
 
     //For exiting the appliaction on hardware backPress
     useEffect(() => {
@@ -59,7 +59,8 @@ function RequestPage({navigation}) {
 
 
     const [isLoading, setIsLoading] = useState(false);
-    const [fullName, setFullName] = useState("");
+    const [requestFullName, setRequestFullName] = useState("");
+    const [currentUserName, setCurrentUserName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState('');
     const [countryCode, setCountryCode] = useState('+92');
     const [selectedBloodType, setSelectedBloodType] = useState(null);
@@ -79,30 +80,33 @@ function RequestPage({navigation}) {
         setCountryCode(text);
     };
 
+    // Get current user's information
+    const currentUser = auth.currentUser;
+    const currentUserFullName = currentUser.displayName;
 
     const requestAddOn = () => {
         setIsLoading(true); // Set loading state to true
         // Saving the request data to the Firestore Database
         const requestCollection = collection(db, 'requests');
         addDoc(requestCollection, {
-            fullName: fullName,
+            fullName: requestFullName,
             phoneNumber: `${countryCode}${phoneNumber}`,
             bloodType: selectedBloodType,
             bloodGroup: selectedItem?.name,
             medicalReason: selectedMedicalReason,
-
+            currentUserName: currentUserFullName,
         })
             .then(() => {
                 //Storing request on firestore
                 console.log('Request added successfully.');
                 setIsLoading(false); // Setting Loading to false when done
-
-                setFullName('');
+                setRequestFullName('');
                 setPhoneNumber('');
                 setCountryCode('+92');
                 setSelectedBloodType(null);
                 setSelectedMedicalReason(null);
                 setSelectedItem(null);
+                setCurrentUserName('');
                 Alert.alert(
                     "ALERT!",
                     "Request Added Successfully.",
@@ -123,15 +127,15 @@ function RequestPage({navigation}) {
 
 
         <View style={styles.container}>
-        <OtherUserHeader navigation={navigation}/>
+            <OtherUserHeader navigation={navigation} />
             <ScrollView>
                 <Text style={styles.title}>Fill out the form to make a blood request:</Text>
                 <View style={{ marginLeft: 20, marginRight: 40, marginTop: 10, marginBottom: 10 }}>
 
                     <Text style={styles.inputLabel}>Name</Text>
                     <Input placeholder={"Full Name"}
-                        value={fullName}
-                        onChangeText={(text) => setFullName(text)} />
+                        value={requestFullName}
+                        onChangeText={(text) => setRequestFullName(text)} />
 
 
                     <Text style={styles.inputLabel}>Enter your phone number:</Text>
@@ -253,7 +257,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-       
+
     },
     title: {
         fontSize: 24,

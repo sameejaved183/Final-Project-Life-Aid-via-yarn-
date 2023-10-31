@@ -49,9 +49,7 @@ const Settings = ({ navigation }) => {
     const [uploadProfilePic, setuploadProfilePic] = useState(false);
     const storageRef = ref(storage, 'profilePicture'); // Reference to the "profilePicture" folder in Firebase Storage
 
-    //const stringDate = dateOfBirth.toString();
-    console.log("Profile Picture URL:", profilePictureUrl);
-    console.log("Profile Picture:", profilePicture);
+
 
     const listenForProfilePictureChanges = async (userEmail) => {
         const q = query(collection(db, 'users'), where('email', '==', userEmail));
@@ -94,7 +92,7 @@ const Settings = ({ navigation }) => {
 
                         // Set the parsed date as the date of birth
                         setDateOfBirth(dobDate);
-                        console.log("Date of Birth:", dateOfBirth); // Add this line
+
                     }
                     if (userData.profilePicture) {
                         const url = await getDownloadURL(ref(storage, userData.profilePicture));
