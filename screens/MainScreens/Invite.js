@@ -5,23 +5,22 @@ import { COLORS, icons, images } from '../../constants';
 import { useNavigation } from '@react-navigation/native';
 
 const InviteScreen = () => {
+  //Function to navigate back when hardware back button is pressed
+  const navigation = useNavigation();
   const inviteMessage = 'Save lives effortlessly! 🩸 Be a hero today. Download our Blood Donation App Now. ❤️ #DonateBlood #DownloadNow';
   const inviteLink = 'https://your-app-download-link.com';
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        navigation.goBack();
+        return true; // Prevent default behavior (exit the app)
+      }
+    );
 
+    return () => backHandler.remove();
+  }, [navigation]);
   const shareToWhatsApp = () => {
-    //Function to navigate back when hardware back button is pressed
-    const navigation = useNavigation();
-    useEffect(() => {
-      const backHandler = BackHandler.addEventListener(
-        'hardwareBackPress',
-        () => {
-          navigation.goBack();
-          return true; // Prevent default behavior (exit the app)
-        }
-      );
-
-      return () => backHandler.remove();
-    }, [navigation]);
     const url = `whatsapp://send?text=${encodeURIComponent(inviteMessage + ' ' + inviteLink)}`;
     Linking.openURL(url)
       .then(() => {
@@ -56,28 +55,24 @@ const InviteScreen = () => {
 
   const shareToInstagram = async () => {
     try {
-      // Check if Instagram is installed
-      const isInstagramInstalled = await Linking.canOpenURL('instagram://app');
-
-      if (!isInstagramInstalled) {
+      const instagramUrl = 'https://www.instagram.com/';
+      const isInstagramInstalled = await Linking.canOpenURL(instagramUrl);
+  
+      if (isInstagramInstalled) {
+        Linking.openURL(instagramUrl)
+          .then(() => {
+            console.log('Instagram opened');
+          })
+          .catch((error) => {
+            console.error('Error opening Instagram: ', error);
+          });
+      } else {
         console.error('Instagram not installed');
-        return;
       }
-
-      // Use the 'share' intent to pre-fill the caption and, optionally, attach an image
-      const instagramUrl = `instagram://library?LocalIdentifier=${encodeURIComponent(inviteLink)}`;
-
-      Linking.openURL(instagramUrl)
-        .then(() => {
-          console.log('Instagram opened');
-        })
-        .catch((error) => {
-          console.error('Error opening Instagram: ', error);
-        });
     } catch (error) {
       console.error('Error: ', error);
     }
-  };
+  };  
 
   const shareToMessenger = () => {
     const url = `fb-messenger://share/?link=${encodeURIComponent(inviteLink)}`;

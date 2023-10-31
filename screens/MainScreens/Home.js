@@ -4,9 +4,10 @@ import PageContainer from '../../components/PageContainer';
 import { icons } from '../../constants';
 import { COLORS, FONTS, SIZES } from "../../constants/themes";
 import HeaderUsers from '../../components/HeaderUsers';
+import { useNavigation } from '@react-navigation/native';
 
-const Home = ({navigation},props) => {
- 
+const Home = () => {
+  const navigation = useNavigation();
   useEffect(() => {
     const backAction = () => {
       Alert.alert(
@@ -60,7 +61,7 @@ const Home = ({navigation},props) => {
                 <Text style={styles.text2}>Create a Request</Text>
               </View>
               <Text style={styles.text3}>Ask for blood in emergency situation.</Text>
-              <TouchableOpacity onPress={() => props.navigation.navigate("RequestPage")}>
+              <TouchableOpacity onPress={() => navigation.navigate("RequestPage")}>
                 <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', flexDirection: 'row' }}>
                   <Text style={{ color: COLORS.primaryRed, fontWeight: 'bold' }}>Request</Text>
                   <Image source={icons.rightArrowRed} style={{ height: 16, width: 14, marginLeft: 5 }} />
@@ -74,7 +75,7 @@ const Home = ({navigation},props) => {
                 <Text style={styles.text2}>Invite Friends</Text>
               </View>
               <Text style={styles.text3}>Inviting People can bring a change, someone in your friends & family would be able to help.</Text>
-              <TouchableOpacity onPress={() => props.navigation.navigate("Invite")}>
+              <TouchableOpacity onPress={() => navigation.navigate("Invite")}>
                 <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', flexDirection: 'row' }}>
                   <Text style={{ color: COLORS.primaryRed, fontWeight: 'bold' }}>Invite</Text>
                   <Image source={icons.rightArrowRed} style={{ height: 16, width: 14, marginLeft: 5 }} />

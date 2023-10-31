@@ -153,11 +153,11 @@ useEffect(() => {
 
               </View>
               <TouchableOpacity onPress={() => {
-                props.navigation.navigate('NotificationScreen');
+                navigation.navigate('NotificationScreen');
               }}>
                 <Ionicons style={{
                   position: 'absolute',
-                  right: 15,
+                  right: 20,
                   top: -14,
 
                 }}
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     notificationBadge: {
       position: 'absolute',
       top: 0,
-      right: 9,
+      right: 15,
       backgroundColor: 'white',
       borderRadius: 10,
       width: 20,
